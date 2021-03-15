@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 from scipy.stats import weibull_min
 
 from celavi.simple_model import Context
@@ -562,7 +561,7 @@ def run_suite(turb_rec:float, turb_cement:float, coarse_grind:str):
 
 
 # scenario def for debugging
-run_once(scenario='bau', turb_rec=51.0, turb_cement=204.0, coarse_grind='onsite')
+#run_once(scenario='bau', turb_rec=51.0, turb_cement=204.0, coarse_grind='onsite')
 
 # vary the km between the turbine location and the landfill
 # vary the location of the coarse grinding
