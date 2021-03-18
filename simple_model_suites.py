@@ -8,7 +8,7 @@ from celavi.simple_model import Context
 np.random.seed(123)
 
 # read in input data as-is
-_lci_input = pd.read_csv('lci.csv')
+_lci_input = pd.read_csv('../celavi-data/frontiers/lci.csv')
 
 # Melt to a dataframe with columns: flow unit, flow name, material, direction,
 # process, quantity
@@ -35,7 +35,7 @@ em_factors = pd.DataFrame(data=[['kg', 'carbon dioxide, fossil', 'coal', 'output
                           index=None,
                           columns=['flow unit', 'flow name', 'material', 'direction', 'process', 'quantity'])
 
-usgs = pd.read_csv("TX_input_data_with_masses.csv")
+usgs = pd.read_csv("../celavi-data/frontiers/TX_input_data_with_masses.csv")
 
 # drop any rows without years (should be none)
 usgs.dropna(axis=0, subset=["year"], inplace=True)
