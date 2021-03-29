@@ -7,96 +7,41 @@ The Circular Economy Lifecycle Assessment and VIsualization (CELAVI) framework a
 
 On macOS, use Terminal to type the commands. On Windows, use the Anaconda Prompt. To start typing the commands, you will need to use the `cd` command (which does the same thing on macOS and Windows) to navigate to the root of the cloned repository. Most of the commands work the same on macOS or Windows. Where they differ, this documentation will call those difference out.
 
-## Installation
+# Setup
 
-This installation assumes you are using `conda` to create virtual environments.
+## Discrete Event Simulation
 
-From the command prompt with the folder of your cloned repository, execute the following commands (these only need to be ran once at installation time):
+This repository contains the discrete event simulation (DES) portion of the model. 
 
-```
-conda create -n celavi python=3.8
-conda activate celavi
-pip install -e .
-```
+## pyLCA
 
-## Running the package
+The life cycle assessment (LCA) portion of the model.
 
-First, change directory to the `tinysd` folder. In that folder there is the `celavi_sample_10_turbines.csv` file which contains anonymized data for ten turbines with a location at the NREL NWTC (they really aren't at the NWTC).
+## Input data
 
-From the root of the repo:
+All necessary input data as well as a set of raw results is available in the `frontiers-fy21` branch of the `celavi-data` GitHub repository. Additional details on the contents of the input data files are available in the README of that repo.
 
-```
-cd tinysd
-python -m celavi
-```
+### Turbine mass flows
 
-An output file called `material_component_log.csv` which is the output log.
+Wind turbine installation in Texas in number of turbines per year, with average values for turbine blade and foundation mass.
 
-## Guide for development
+### Life cycle inventory
 
-### Code formatting and type checking
+Material and energy inputs for each of the processes involved in the end-of-life wind turbine blade supply chain.
 
-To ensure code consistency, we use MyPy for type checking and Black for code formatting. This table lists some information on these packages and how they are set up:
+## Running the model
 
-Package | What it does | Configuration File | URL for more information |
----|---|---|---
-MyPy | Creates optional type checking for variables in the code to reduce errors that arise from type mismatches | `mypy.ini` | [http://mypy-lang.org/](http://mypy-lang.org/)
-Black | Ensures code is consistently formatted | `pyproject.toml` | [https://black.readthedocs.io/en/stable/](https://black.readthedocs.io/en/stable/)
+Executing `simple_model_suites.py` will run all scenarios discussed in the Frontiers article.
 
-### Manually executing code formatting and type checking
+### Output files and contents
 
-From the root of the repo, run the following commands
+1. `inventories` contains mass flows throughout the supply chain. 
+2. `cost-histories` contains pathway cost trends and individual process costs.
 
-```
-mypy celavi
-black celavi --exclude sd_model.py
-```
+## Postprocessing to calculate environmental impacts
 
-(Note: The `--exclude` option will ignore the automatically generated SD model from PySD)
+How pyLCA is run using CELAVI output
 
-If all passes, you will get status messages that look similar to the following:
+## Creating visualizations from output files
 
-The message from MyPy:
-
-```
-Success: no issues found in 1 source file
-```
-
-The message from Black:
-
-```
-All done! ✨ 🍰 ✨
-1 file left unchanged.
-```
-
-Black has the useful feature that, if it finds a non-compliant file, it will fail with an error but will also reformat the file for you.
-
-The first time you run MyPy can be slow since it needs to parse the files and put them into a cache for faster type checking.
-
-### Docstrings
-
-To build the documentation from the docstrings in the code, type the following commands from the root of the repo:
-
-On macOS, from the root of the repo, type the following command:
-
-``` 
-cd docs
-make html
-```
-
-On Windows, from the root of the repo, type the following command:
-
-``` 
-cd docs
-make.bat html
-```
-
-After these commands, these documentation can be found at `docs/_build/html/index.html`
-
-### Testing
-
-This project uses `pytest` as the testing framework. To run all the tests, execute the following command from the root of the repo.
-
-``` 
-pytest celavi/tests
-```
+Jupyter notebook `CELAVI-Figures`
