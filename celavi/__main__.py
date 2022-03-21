@@ -23,6 +23,9 @@ from celavi.reeds_importer import ReedsImporter
 from celavi.des import Context
 from celavi.diagnostic_viz import DiagnosticViz
 import yaml
+# ! CE ABM & CELAVI soft-coupling proposal - start
+from celavi.ce_abm_celavi.Wind_ABM_Run import WindABMRun
+# ! CE ABM & CELAVI soft-coupling proposal - end
 
 parser = argparse.ArgumentParser(description='Execute CELAVI model')
 parser.add_argument('--data', help='Path to the input and output data folder.')
@@ -273,6 +276,24 @@ mass_cumulative_histories_filename = os.path.join(
 
 ## Read in datasets that are passed around as DataFrames or similar
 component_material_mass = pd.read_csv(component_material_masses_filename)
+
+# ! CE ABM & CELAVI soft-coupling proposal - start
+def select_ceabm_inputs() -> dict:
+    """
+    Collect (and if needed adapt) relevant celavi inputs to run the CE ABM.
+    :return: a dictionary containing the inputs for the CE ABM with 
+    key = input name and value = input value (taken from celavi inputs).
+    """
+    ce_abm_inputs = {}
+    return ce_abm_inputs
+
+## Run the CE ABM
+ce_abm_inputs = select_ceabm_inputs()
+wind_abm_run = WindABMRun()
+for key, value in ce_abm_inputs.items():
+    setattr(wind_abm_run, key, value)
+wind_abm_run.run_model()
+# ! CE ABM & CELAVI soft-coupling proposal - end
 
 ## Define general model and scenario parameters
 if use_computed_routes:

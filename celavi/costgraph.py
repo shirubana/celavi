@@ -533,12 +533,16 @@ class CostGraph:
             # combinations of _u_nodes and _v_nodes
             _edge_list = self.all_element_combos(_u_nodes, _v_nodes)
 
+            # ! CE ABM & CELAVI soft-coupling proposal - start
             if not any([self.supply_chain.nodes[_v]['step']
                         in self.sc_end for _v in _v_nodes]):
+                # TODO: all "self.supply_chain.nodes[edge[0]][
+                    # 'step_cost_method']" will be replaced with 
+                    # "ce_abm_cost_method"
                 _methods = [
                     {'cost_method': [
                         getattr(CostMethods,
-                                self.supply_chain.nodes[edge[0]]['step_cost_method']),
+                                "ce_abm_cost_method"),
                         getattr(CostMethods,
                                 _transpo_cost)
                     ],
@@ -550,9 +554,7 @@ class CostGraph:
                 _methods = [
                     {'cost_method': [
                         getattr(CostMethods,
-                                self.supply_chain.nodes[edge[0]]['step_cost_method']),
-                        getattr(CostMethods,
-                                _transpo_cost),
+                                "ce_abm_cost_method"),
                         getattr(CostMethods,
                                 self.supply_chain.nodes[edge[1]]['step_cost_method'])
                     ],
@@ -560,6 +562,8 @@ class CostGraph:
                         'dist': -1.0}
                     for edge in _edge_list
                 ]
+            # … (same principle will be applied everywhere relevant)
+            # ! CE ABM & CELAVI soft-coupling proposal - end
 
             # add these edges to the supply chain
             self.supply_chain.add_edges_from(

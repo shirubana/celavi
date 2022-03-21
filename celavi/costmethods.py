@@ -412,3 +412,15 @@ class CostMethods:
                 _cost = 17.40
 
             return _cost * _vkmt / _mass
+
+# ! CE ABM & CELAVI soft-coupling proposal - start
+    @staticmethod
+    def ce_abm_costs_function() -> float:
+        """
+        Use the CE ABM outputs to set up EOL pathway costs.
+        :return: cost of the current supply chain configuration (row in 
+        transpo_edges)
+        """
+        pathway_cost = 'cost'
+        return pathway_cost
+# ! CE ABM & CELAVI soft-coupling proposal - end
