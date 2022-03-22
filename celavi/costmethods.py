@@ -415,7 +415,7 @@ class CostMethods:
 
 # ! CE ABM & CELAVI soft-coupling proposal - start
     @staticmethod
-    def ce_abm_costs_function() -> float:
+    def ce_abm_cost_method() -> float:
         """
         Use the CE ABM outputs to set up EOL pathway costs.
         :return: cost of the current supply chain configuration (row in 
