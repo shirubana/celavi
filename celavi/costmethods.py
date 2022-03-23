@@ -412,3 +412,19 @@ class CostMethods:
                 _cost = 17.40
 
             return _cost * _vkmt / _mass
+
+# ! CE ABM & CELAVI soft-coupling proposal - start
+    @staticmethod
+    def ce_abm_cost_method(facility_type: str) -> float:
+        """
+        Use the CE ABM outputs to set up EOL pathway costs.
+        :param facility_type: type of facility (and the function behaves 
+        differently based on this parameter)  
+        :return: cost of the current supply chain configuration (row in 
+        transpo_edges)
+        """
+        ce_abm_outputs = pd.read_csv("ce_abm_output_file.csv")
+        # processing of the outputs to define costs
+        pathway_cost = ce_abm_outputs[facility_type]
+        return pathway_cost
+# ! CE ABM & CELAVI soft-coupling proposal - end

@@ -11,9 +11,9 @@ from celavi.transportation_tracker import TransportationTracker
 from celavi.component import Component
 from celavi.costgraph import CostGraph
 from celavi.pylca_celavi.des_interface import PylcaCelavi
-# ! CE ABM & CELAVI soft-coupling proposal - start
-# from celavi.ce_abm_celavi.Wind_ABM_Run import WindABMRun
-# ! CE ABM & CELAVI soft-coupling proposal - end
+# ! CE ABM & CELAVI hard-coupling proposal - start
+from celavi.ce_abm_celavi.Wind_ABM_Model import WindABM
+# ! CE ABM & CELAVI hard-coupling proposal - end
 
 
 class Context:
@@ -172,7 +172,24 @@ class Context:
 
         self.data_for_lci: List[Dict[str, float]] = []
         
-        self.ce_abm = 
+        # ! CE ABM & CELAVI hard-coupling proposal - start
+        @staticmethod
+        def select_ceabm_inputs() -> dict:
+            """
+            Collect (and if needed adapt) relevant celavi inputs to run the 
+            CE ABM.
+            :return: a dictionary containing the inputs for the CE ABM with 
+            key = input name and value = input value (taken from celavi inputs).
+            """
+            ce_abm_inputs = {}
+            return ce_abm_inputs
+
+        ## Initialize the CE ABM
+        ce_abm_inputs = select_ceabm_inputs()
+        self.ce_abm = WindABM()
+        for key, value in ce_abm_inputs.items():
+            setattr(self.ce_abm, key, value)
+        # ! CE ABM & CELAVI hard-coupling proposal - end
 
     def years_to_timesteps(self, year: float) -> int:
         """
@@ -310,6 +327,22 @@ class Context:
         print(f'{datetime.now()} process_name {process_name}, kind {component_kind}, time {timestep}, total_mass {total_mass} tonnes')
         return total_mass
 
+    # ! CE ABM & CELAVI hard-coupling proposal - start
+    def ce_abm_interface_process(self, env, new_inputs):
+        """
+        The ce_abm_interface_process updates the ce_abm inputs and runs its
+        step function (activates the agents behavioral rules for that time step
+        and collect outputs).
+        :param env: The SimPy environment this process belongs to.
+        :param new_inputs: new inputs to update the CE ABM
+        """
+        while True:
+            yield env.timeout(self.timesteps_per_year)
+            for key, value in new_inputs.items():
+                setattr(self.ce_abm, key, value)
+            self.ce_abm.step()
+    # ! CE ABM & CELAVI hard-coupling proposal - end
+
     def pylca_interface_process(self, env):
         """
         pylca_interface_process() runs periodically to update the LCIA model with
@@ -441,6 +474,9 @@ class Context:
         """
 
         print('DES RUN STARTING\n\n\n',flush=True)
+        # ! CE ABM & CELAVI hard-coupling proposal - start
+        self.env.process(self.ce_abm_interface_process(self.env, 'new_inputs'))
+        # ! CE ABM & CELAVI hard-coupling proposal - end
         self.env.process(self.update_cost_graph_process(self.env))
         self.env.process(self.pylca_interface_process(self.env))
         self.env.run(until=int(self.max_timesteps))
