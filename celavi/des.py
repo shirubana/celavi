@@ -11,6 +11,9 @@ from celavi.transportation_tracker import TransportationTracker
 from celavi.component import Component
 from celavi.costgraph import CostGraph
 from celavi.pylca_celavi.des_interface import PylcaCelavi
+# ! CE ABM & CELAVI soft-coupling proposal - start
+# from celavi.ce_abm_celavi.Wind_ABM_Run import WindABMRun
+# ! CE ABM & CELAVI soft-coupling proposal - end
 
 
 class Context:
@@ -168,6 +171,8 @@ class Context:
         self.cost_graph_update_interval_timesteps = cost_graph_update_interval_timesteps
 
         self.data_for_lci: List[Dict[str, float]] = []
+        
+        self.ce_abm = 
 
     def years_to_timesteps(self, year: float) -> int:
         """
