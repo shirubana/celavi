@@ -1,0 +1,77 @@
+model_run:
+    start_year: 2000
+    end_year: 2002
+    timesteps_per_year: 12
+    min_lifespan: 120 # timesteps
+    lcia_update: 12 # timesteps
+    cg_update: 12 #timesteps
+    cg_verbose: 1
+    save_cg_csv: True
+
+directories:
+    quality_checks: quality_checks/
+    inputs_to_preprocessing: inputs_to_preprocessing/
+    inputs_optional: inputs_optional/
+    inputs: inputs/
+    generated: generated/
+    results: results/
+
+files:
+    # Files that must be processed to create CELAVI input files
+    inputs_to_preprocessing:
+        transportation_graph: transportation_graph.csv
+        node_locs: node_locations.csv
+        power_plant_locs: uswtdb_v4_1_20210721.csv
+        landfill_locs: landfilllmopdata.csv
+        other_facility_locs: other_facility_locations_all_us.csv
+        capacity_projection: 
+    
+    # Inputs that are alternatives to programmatically generated inputs
+    inputs_optional:
+        step_costs_custom: step_costs_custom.csv # an alternative to the generated step_costs file
+        routes_custom: routes.csv # an alternative to the generated routes_computed file
+        stock_filename: stock_filename.p
+
+    # Files used directly as CELAVI inputs
+    inputs:
+        lookup_facility_type: facility_type.csv
+        lookup_step_costs: step_costs_default.csv
+        lookup_steps: step.csv
+        lookup_transpo_cost_methods: transpo_cost_method.csv
+        lookup_step_cost_methods: step_cost_method.csv
+        fac_edges: fac_edges.csv
+        transpo_edges: transpo_edges.csv
+        route_pairs: route_pairs.csv
+        component_material_mass: avgmass.csv
+        static_lci: foreground_process_inventory.csv
+        uslci: usnrellci_processesv2017_loc_debugged.p
+        lci_activity_locations: location.csv
+        emissions_lci: emissions_inventory.csv
+        traci_lci: traci21.csv
+        state_reeds_grid_mix: state_dynamic_grid_mix.csv
+        national_reeds_grid_mix: national_dynamic_grid_mix.csv
+
+    # Files written during CELAVI runs intended only for internal or debugging use
+    generated:
+        costgraph_pickle: netw.obj
+        costgraph_csv: netw.csv
+        step_costs: step_costs.csv
+        locs: locations_computed.csv
+        technology_data: number_of_technology_units.csv
+        routes_computed: routes_computed.csv
+        intermediate_demand: intermediate_demand.csv
+        lcia_to_des: final_lcia_results_to_des.csv
+        lcia_shortcut_db: lca_db.csv
+        state_electricity_lci: state_level_grid_mix.csv
+        national_electricity_lci: national_level_grid_mix.csv
+    
+    # Human-readable results files for visualization and further analysis
+    results:
+        pathway_criterion_history: pathway_criterion_history.csv
+        component_counts_plot: component_counts.png
+        material_mass_plot: material_mass.png
+        count_cumulative_histories: count_cumulative_histories.csv
+        mass_cumulative_histories: mass_cumulative_histories.csv
+        lcia_facility_results: lcia_locations_join.csv
+        lcia_transpo_results: lcia_transportation.csv
+        central_summary: central_summary.csv

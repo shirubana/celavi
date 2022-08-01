@@ -1,0 +1,172 @@
+flags:
+  clear_results         : True # If results files already exist, move them to a sub-directory to avoid overwriting
+  compute_locations     : True  # if compute_locations is enabled (True), compute locations from raw input files (e.g., LMOP, US Wind Turbine Database)
+  run_routes            : True  # if run_routes is enabled (True), compute routing distances between all input locations
+  use_computed_routes   : True  # if use_computed_routes is enabled, read in a pre-assembled routes file instead of generating a new one
+  initialize_costgraph  : True  # create cost graph fresh or use an imported version
+  location_filtering    : False  # If true, dataset will be filtered to the states below
+  distance_filtering    : False # if true, filter computed routes based on max distances in route_pairs file
+  pickle_costgraph      : True  # save the newly initialized costgraph as a pickle file
+  generate_step_costs   : True # set to False if supply chain costs for a facility type vary regionally
+  use_fixed_lifetime    : True # set to False to use Weibull distribution for lifetimes
+  use_lcia_shortcut     : True # set to False to re-generate the lca_db file
+  
+
+scenario:
+    name:
+    capacity_projection: StScen20A_Fake_annual_state.csv
+    states_included:
+    seed: 13
+    electricity_mix_level : state
+    runs: 1
+
+circular_pathways:
+    sc_begin:
+    - manufacturing
+    sc_end: 
+    - landfilling
+    #sc_in_circ:
+    sc_out_circ:
+    - cement co-processing
+    - next use    
+    learning:
+        coarse grinding:
+            component : blade
+            initial cumul: 1.0
+            cumul: 
+            learn rate: -0.05
+            steps:
+            - coarse grinding
+            - coarse grinding onsite
+        fine grinding:
+            component : blade
+            initial cumul: 1.0
+            cumul:
+            learn rate: -0.05
+            steps:
+            - fine grinding
+    cost uncertainty:
+        landfilling:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            m: 1.5921
+            b: 28.9
+        rotor teardown:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            m: 1467.08
+            b: 285.0
+        segmenting:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            b: 27.56
+        coarse grinding onsite:
+            uncertainty:
+            actual cost:
+                c: 0.5
+                loc: 0.8
+                scale: 0.4
+            initial cost: 106
+        coarse grinding:
+            uncertainty:
+            actual cost:
+                c: 0.5
+                loc: 0.8
+                scale: 0.4
+            initial cost: 106
+        fine grinding:
+            uncertainty:
+            actual cost:
+                c: 0.5
+                loc: 0.8
+                scale: 0.4
+            initial cost: 143
+            revenue:
+                c: 0.5
+                loc: 0.8
+                scale: 0.4
+                b: 273
+        coprocessing:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            b: 10.37
+        segment transpo:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            cost 1: 4.35 # Before 2001; 2002-2003
+            cost 2: 8.70 # 2001-2002; 2003-2019
+            cost 3: 13.05 # 2019-2031
+            cost 4: 17.40 # 2031-2044
+            cost 5: 21.75 # 2044-2050
+        shred transpo:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            m: 0.0011221
+            b: 0.0524
+        manufacturing:
+            uncertainty:
+            c: 0.5
+            loc: 0.8
+            scale: 0.4
+            b: 11440.0
+    path_split:
+        fine grinding:
+            fraction: 0.3
+            facility_1: landfilling
+            facility_2: next use  
+        pass:
+            next use
+    permanent_lifespan_facility: 
+    - landfilling
+    - cement co-processing
+    - next use
+    vkmt : 
+    component mass : 
+    year : 
+    
+
+technology_components:
+    circular_components:
+    - blade
+    component_list:
+        nacelle : 1
+        blade : 3
+        tower : 1
+        foundation : 1
+    component_materials:
+        nacelle : 
+        - steel
+        blade : 
+        - glass fiber
+        - epoxy
+        tower : 
+        - steel
+        foundation : 
+        - concrete
+    component_fixed_lifetimes: # Years
+        nacelle : 30
+        blade : 20
+        foundation : 50
+        tower : 50
+    component_weibull_params: #L, K
+        nacelle : 
+        blade : 
+            L : 240
+            K : 2.2
+        foundation : 
+        tower :
+    substitution_rates:
+        sand: 0.15
+        coal: 0.30
